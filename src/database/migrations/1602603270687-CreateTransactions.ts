@@ -20,7 +20,7 @@ export default class CreateTransactions1602603270687
           },
           {
             name: 'value',
-            type: 'integer',
+            type: 'numeric(13,2)',
             isNullable: false,
           },
           {

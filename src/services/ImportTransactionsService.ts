@@ -24,7 +24,7 @@ class ImportTransactionsService {
 
     const parseCSV = csvReadStream.pipe(parsers);
 
-    const transactios: TransactionCSV[] = [];
+    const transactions: TransactionCSV[] = [];
     const categories: string[] = [];
 
     parseCSV.on('data', async line => {
@@ -35,14 +35,13 @@ class ImportTransactionsService {
       if (!title || !type || !value) return;
 
       categories.push(category);
-      transactios.push({ title, type, value, category });
+      transactions.push({ title, type, value, category });
     });
 
     await new Promise(resolve => parseCSV.on('end', resolve));
 
     // descobrir as categorias existentes no banco de dados
     const existentCategories = await categoriesRepository.find({
-      select: ['title'],
       where: {
         title: In(categories),
       },
@@ -65,7 +64,7 @@ class ImportTransactionsService {
     const finalCategories = [...existentCategories, ...newCategories];
 
     const createTransactions = transactionsRepository.create(
-      transactios.map(transaction => ({
+      transactions.map(transaction => ({
         title: transaction.title,
         value: transaction.value,
         type: transaction.type,

@@ -17,13 +17,13 @@ class Transaction {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ type: 'numeric', precision: 13, scale: 2 })
   value: number;
 
   @Column('varchar')
   type: 'income' | 'outcome';
 
-  @ManyToOne(() => Category)
+  @ManyToOne(() => Category, category => category.transaction, { eager: true })
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
